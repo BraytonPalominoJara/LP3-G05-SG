@@ -1,0 +1,100 @@
+# LP3-G05-SG01
+Para la entrega de trabajos
+1.
+import java.util.Scanner;
+
+public class App {
+    public static int cociente(int numerador, int denominador) {
+        if (denominador == 0) {
+            throw new ArithmeticException("División por cero no permitida");
+        }
+        return numerador / denominador;
+    }
+
+    public static void main(String[] args) {
+        Scanner explorador = new Scanner(System.in);
+
+        System.out.print("Introduzca un numerador entero: ");
+        int numerador = explorador.nextInt();
+        System.out.print("Introduzca un denominador entero: ");
+        int denominador = explorador.nextInt();
+
+        try {
+            int resultado = cociente(numerador, denominador);
+            System.out.printf("\nResultado: %d/%d = %d\n", numerador, denominador, resultado);
+        } catch (ArithmeticException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+}
+
+2.
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class App {
+    public static int cociente(int numerador, int denominador) throws ArithmeticException {
+        if (denominador == 0) {
+            throw new ArithmeticException("División por cero no permitida");
+        }
+        return numerador / denominador;
+    }
+
+    public static void main(String[] args) {
+        Scanner explorador = new Scanner(System.in);
+        boolean flag = true;
+
+        while (flag) {
+            try {
+                System.out.print("Introduzca un numerador entero: ");
+                int numerador = explorador.nextInt();
+                System.out.print("Introduzca un denominador entero: ");
+                int denominador = explorador.nextInt();
+
+                int resultado = cociente(numerador, denominador);
+                System.out.printf("\nResultado: %d / %d = %d\n", numerador, denominador, resultado);
+                flag = false;
+            } catch (InputMismatchException inputMismatchE) {
+                System.out.printf("\nExcepción: %s\n", inputMismatchE);
+                explorador.nextLine();
+                System.out.println("Debe introducir enteros. Intente de nuevo...\n");
+            } catch (ArithmeticException arithmeticE) {
+                System.out.printf("\nExcepción: %s\n", arithmeticE);
+                explorador.nextLine();
+                System.out.println("Cero es un denominador inválido. Intente de nuevo...\n");
+            }
+        }
+    }
+}
+
+3.
+
+public class AppMiExcepcion {
+    public static void main(String[] args) {
+        // Línea 6: Llamamos a validaPropia con un valor
+        validaPropia(5);
+        
+        // Línea 9: Vuelve a ejecutar el programa con un valor diferente
+        validaPropia(15);
+    }
+
+    public static void validaPropia(int n) {
+        try {
+            minimo(n);
+            System.out.println(n + " es mayor a 10");
+        } catch (MiExcepcion e) {
+            System.out.println(e.getMessage());
+            System.out.println("No me sirve ese número");
+        }
+    }
+
+    public static void minimo(int numero) throws MiExcepcion {
+        if (numero <= 10) {
+            throw new MiExcepcion("Necesito un número mayor a 10");
+        }
+    }
+}
+
+
+
