@@ -1,0 +1,215 @@
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+
+public class Empleado {
+    private int numero;
+    private String nombre;
+    private double sueldo;
+
+
+    public Empleado(int numero, String nombre, double sueldo) {
+        this.numero = numero;
+        this.nombre = nombre;
+        this.sueldo = sueldo;
+    }
+
+
+    public int getNumero() {
+        return numero;
+    }
+
+
+    public String getNombre() {
+        return nombre;
+    }
+
+
+    public double getSueldo() {
+        return sueldo;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Número: " + numero + ", Nombre: " + nombre + ", Sueldo: " + sueldo;
+    }
+}
+
+
+public class EmpleadoApp {
+    public static void main(String[] args) {
+        List<Empleado> empleados = new ArrayList<>();
+
+
+        Scanner scanner = new Scanner(System.in);
+
+
+        while (true) {
+            System.out.println("Opciones:");
+            System.out.println("1. Agregar empleado");
+            System.out.println("2. Mostrar empleados");
+            System.out.println("3. Salir");
+            System.out.print("Seleccione una opción: ");
+            int opcion = scanner.nextInt();
+            scanner.nextLine(); // Consumir el salto de línea
+
+
+            if (opcion == 1) {
+                System.out.print("Número del empleado: ");
+                int numero = scanner.nextInt();
+                scanner.nextLine();
+
+
+                System.out.print("Nombre del empleado: ");
+                String nombre = scanner.nextLine();
+
+
+                System.out.print("Sueldo del empleado: ");
+                double sueldo = scanner.nextDouble();
+
+
+                Empleado empleado = new Empleado(numero, nombre, sueldo);
+                empleados.add(empleado);
+
+
+                try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("empleados.dat"))) {
+                    outputStream.writeObject(empleados);
+                    System.out.println("Empleado agregado con éxito.");
+                } catch (IOException e) {
+                    System.out.println("Error al agregar empleado: " + e.getMessage());
+                }
+            } else if (opcion == 2) {
+                try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("empleados.dat"))) {
+                    List<Empleado> empleadosLeidos = (List<Empleado>) inputStream.readObject();
+                    for (Empleado empleado : empleadosLeidos) {
+                        System.out.println(empleado);
+                    }
+                } catch (IOException | ClassNotFoundException e) {
+                    System.out.println("Error al mostrar empleados: " + e.getMessage());
+                }
+            } else if (opcion == 3) {
+                System.out.println("Saliendo del programa.");
+                break;
+            }
+        }
+    }
+}
+Opciones:
+1. Agregar empleado
+2. Mostrar empleados
+3. Salir
+Seleccione una opción: 1
+Número del empleado: 1
+Nombre del empleado: Juan Perez
+Sueldo del empleado: 3000
+Empleado agregado con éxito.
+Opciones:
+1. Agregar empleado
+2. Mostrar empleados
+3. Salir
+Seleccione una opción: 1
+Número del empleado: 2
+Nombre del empleado: Ana García
+Sueldo del empleado: 3500
+Empleado agregado con éxito.
+Opciones:
+1. Agregar empleado
+2. Mostrar empleados
+3. Salir
+Seleccione una opción: 2
+Número: 1, Nombre: Juan Perez, Sueldo: 3000.0
+Número: 2, Nombre: Ana García, Sueldo: 3500.0
+Opciones:
+1. Agregar empleado
+2. Mostrar empleados
+3. Salir
+Seleccione una opción: 3
+Saliendo del programa.
+
+/////////////////////////////////////////////
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+
+public class WordCountGUI extends JFrame {
+    private JTextArea textArea;
+    private JButton countButton;
+    private JLabel linesLabel, wordsLabel, charactersLabel;
+
+
+    public WordCountGUI() {
+        setTitle("Word Count Program");
+        setSize(400, 200);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
+        textArea = new JTextArea(10, 30);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+
+
+        countButton = new JButton("Count");
+        linesLabel = new JLabel("Lines: ");
+        wordsLabel = new JLabel("Words: ");
+        charactersLabel = new JLabel("Characters: ");
+
+
+        countButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                countWords();
+            }
+        });
+
+
+        JPanel panel = new JPanel();
+        panel.add(countButton);
+
+
+        Container c = getContentPane();
+        c.setLayout(new BorderLayout());
+        c.add(new JScrollPane(textArea), BorderLayout.CENTER);
+        c.add(panel, BorderLayout.SOUTH);
+        c.add(linesLabel, BorderLayout.WEST);
+        c.add(wordsLabel, BorderLayout.EAST);
+        c.add(charactersLabel, BorderLayout.NORTH);
+    }
+
+
+    private void countWords() {
+        String text = textArea.getText();
+        int lines = textArea.getLineCount();
+        int characters = text.length();
+        String[] words = text.split("\\s+");
+        int wordCount = 0;
+
+
+        for (String word : words) {
+            if (word.matches(".*\\w.*")) {
+                wordCount++;
+            }
+        }
+
+
+        linesLabel.setText("Lines: " + lines);
+        wordsLabel.setText("Words: " + wordCount);
+        charactersLabel.setText("Characters: " + characters);
+    }
+
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                WordCountGUI gui = new WordCountGUI();
+                gui.setVisible(true);
+            }
+        });
+    }
+}
