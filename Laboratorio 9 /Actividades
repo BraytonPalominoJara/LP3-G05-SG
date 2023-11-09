@@ -1,0 +1,119 @@
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Scanner;
+
+public class TestFile {
+    public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Escriba la ruta del archivo o directorio:");
+        String input = sc.nextLine();
+        Path ruta = Paths.get(input);
+
+        if (Files.exists(ruta)) {
+            System.out.println("Información sobre el archivo o directorio:");
+            System.out.printf("Nombre: %s%n", ruta.getFileName());
+            System.out.printf("Es un directorio: %s%n", Files.isDirectory(ruta) ? "Sí" : "No");
+            System.out.printf("Es una ruta absoluta: %s%n", ruta.isAbsolute() ? "Sí" : "No");
+            System.out.printf("Fecha de última modificación: %s%n", Files.getLastModifiedTime(ruta));
+            System.out.printf("Tamaño: %d bytes%n", Files.size(ruta));
+            System.out.printf("Ruta: %s%n", ruta);
+            System.out.printf("Ruta absoluta: %s%n", ruta.toAbsolutePath());
+
+            if (Files.isDirectory(ruta)) {
+                System.out.println("Contenido del directorio:");
+                try (DirectoryStream<Path> flujoDirectorio = Files.newDirectoryStream(ruta)) {
+                    for (Path p : flujoDirectorio) {
+                        System.out.println(p.getFileName());
+                    }
+                }
+            }
+        } else {
+            System.out.println("El archivo o directorio no existe.");
+        }
+    }
+}
+Escriba la ruta del archivo o directorio:
+C:\Users\Usuario\Escritorio\mi_directorio
+Información sobre el archivo o directorio:
+Nombre: mi_directorio
+Es un directorio: Sí
+Es una ruta absoluta: Sí
+Fecha de última modificación: 2023-11-08T10:30:00Z
+Tamaño: 4096 bytes
+Ruta: C:\Users\Usuario\Escritorio\mi_directorio
+Ruta absoluta: C:\Users\Usuario\Escritorio\mi_directorio
+Contenido del directorio:
+archivo1.txt
+archivo2.txt
+subdirectorio
+
+////////////////////////////////
+
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String cadena;
+        
+        try (PrintWriter salida = new PrintWriter("e:/ficheros/datos.txt")) { // try-with-resources
+            System.out.println("Introduce texto. Para terminar, introduce la cadena 'FIN':");
+            
+            do {
+                cadena = sc.nextLine();
+                if (!cadena.equalsIgnoreCase("FIN")) {
+                    salida.println(cadena);
+                }
+            } while (!cadena.equalsIgnoreCase("FIN"));
+            
+            System.out.println("Texto guardado en 'e:/ficheros/datos.txt'");
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+Introduce texto. Para terminar, introduce la cadena 'FIN':
+Este es un ejemplo de texto.
+Otro ejemplo de línea.
+FIN
+Texto guardado en 'e:/ficheros/datos.txt'
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
+public class TestFilePrueba {
+    public static void main(String[] args) {
+        FileInputStream file;
+        byte b[] = new byte[1024];
+        String s;
+        try {
+            file = new FileInputStream("src/archivos/TestFile.java");
+            file.read(b);
+            s = new String(b);
+            ViewFile view = new ViewFile(s);      view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            view.setSize(400, 150);
+            view.setVisible(true);
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+class ViewFile extends JFrame {
+    private JTextArea areaTexto;
+
+
+    public ViewFile(String s) {
+        super("Mostrando el contenido de un archivo");
+        areaTexto = new JTextArea(s, 5, 40);
+        add(areaTexto);
+    }
+}
